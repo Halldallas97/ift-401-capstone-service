@@ -24,10 +24,12 @@ public class RepoImpl implements Repository {
         try {
             jdbcTemplate.query(sql, (rs, rowNum) -> {
                 Trader t = Trader.builder()
-                        .phoneNumber(rs.getString("phone_number"))
-                        .fname(rs.getString("first_name"))
-                        .lname(rs.getString("last_name"))
+                        .password(rs.getString("password"))
+                        .firstName(rs.getString("first_name"))
+                        .lastName(rs.getString("last_name"))
                         .email(rs.getString("email"))
+                        .admin(rs.getBoolean("admin"))
+                        .userName(rs.getString("user_name"))
                         .build();
                 traders.add(t);
                 return t;
@@ -36,5 +38,17 @@ public class RepoImpl implements Repository {
             log.error("Error retrieving employees list", e);
         }
         return traders;
+    }
+
+    @Override
+    public void postTrader(Trader trader) {
+        String sql = "insert into trader (password, email, admin, user_name, first_name, last_name)\n" +
+                "values (?, ?, ?, ?, ?, ?)";
+        try {
+            jdbcTemplate.update(sql, trader.getPassword(), trader.getEmail(), trader.isAdmin(), trader.getUserName(), trader.getFirstName(), trader.getLastName());
+        } catch (DataAccessException e){
+            log.error("unable to add trader {} with error:", trader.getFirstName(), e);
+        }
+
     }
 }

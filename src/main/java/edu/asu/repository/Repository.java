@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface Repository {
     List<Trader> getTraders();
+
+    void postTrader(Trader trader);
 }

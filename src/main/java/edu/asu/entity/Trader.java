@@ -1,8 +1,6 @@
 package edu.asu.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
@@ -28,4 +26,10 @@ public class Trader implements Serializable {
     private String password;
     @Column(name = "admin", nullable = false)
     private boolean admin;
+    //todo wallet should be int not boolean.
+    @Column(name = "wallet")
+    private int wallet;
+    // One-to-One relationship with Portfolio
+    @OneToOne(mappedBy = "trader", cascade = CascadeType.ALL)
+    private Portfolio portfolio;
 }

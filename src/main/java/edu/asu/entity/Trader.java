@@ -1,9 +1,6 @@
 package edu.asu.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
@@ -17,14 +14,22 @@ import java.io.Serializable;
 @Data
 public class Trader implements Serializable {
     @Id
-    @JsonIgnore
-    private String id;
-    @Column(name = "phone_number", nullable = false)
-    private String phoneNumber;
-    @Column(name = "first_name", nullable = false)
-    private String fname;
-    @Column(name = "last_name", nullable = false)
-    private String lname;
     @Column(name = "email", nullable = false)
     private String email;
+    @Column(name = "user_name", nullable = false)
+    private String userName;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+    @Column(name = "password", nullable = false)
+    private String password;
+    @Column(name = "admin", nullable = false)
+    private boolean admin;
+    //todo wallet should be int not boolean.
+    @Column(name = "wallet")
+    private int wallet;
+    // One-to-One relationship with Portfolio
+    @OneToOne(mappedBy = "trader", cascade = CascadeType.ALL)
+    private Portfolio portfolio;
 }

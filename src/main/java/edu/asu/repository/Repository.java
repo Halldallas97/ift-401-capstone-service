@@ -1,9 +1,12 @@
 package edu.asu.repository;
 
+import edu.asu.entity.Portfolio;
 import edu.asu.entity.Trader;
 
-import java.util.List;
-
 public interface Repository {
-    List<Trader> getTraders();
+    Trader getTraders(String email, String password);
+
+    void postTrader(Trader trader);
+
+//    Portfolio getPortfolio(String email);
 }

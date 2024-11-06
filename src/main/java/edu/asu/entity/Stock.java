@@ -21,11 +21,14 @@ public class Stock {
     @Column(name = "company_name", nullable = false)
     private String company;
 
-    @Column(name = "initial_price", nullable = false)
-    private long initialPrice;
+    @Column(name = "sym", nullable = false)
+    private String sym;
 
-    @Column(name = "strike_price", nullable = false)
-    private long strikePrice;
+    @Column(name = "cost", nullable = false)
+    private long cost;
+
+    @Column(name = "quantity", nullable = false)
+    private long quantity;
 
     @Column(name = "volume", nullable = false)
     private int volume;

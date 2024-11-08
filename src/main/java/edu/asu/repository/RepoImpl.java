@@ -23,7 +23,7 @@ public class RepoImpl implements Repository {
 
     @Override
     public Stocks getStocks(String email) {
-        Integer id = getUserId(email); // Get the user ID
+        Integer id = getUserId(email);
         String sql = "SELECT * FROM stock WHERE portfolio_id = ?";
         Stocks stocks = new Stocks();
         List<Stock> stocksList = new ArrayList<>();
@@ -62,7 +62,7 @@ public class RepoImpl implements Repository {
             });
         } catch (DataAccessException e) {
             log.error("Error retrieving trader", e);
-            return null; // Or throw an exception based on your requirements
+            return null;
         }
     }
 

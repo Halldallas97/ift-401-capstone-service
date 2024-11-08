@@ -1,6 +1,8 @@
 package edu.asu.repository;
 
+import edu.asu.entity.Stock;
 import edu.asu.entity.StockOrder;
+import edu.asu.entity.Stocks;
 import edu.asu.entity.Trader;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +10,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -16,6 +20,31 @@ import java.util.UUID;
 @Slf4j
 public class RepoImpl implements Repository {
     private final JdbcTemplate jdbcTemplate;
+
+    @Override
+    public Stocks getStocks(String email) {
+        Integer id = getUserId(email);
+        String sql = "SELECT * FROM stock WHERE portfolio_id = ?";
+        Stocks stocks = new Stocks();
+        List<Stock> stocksList = new ArrayList<>();
+        try {
+            jdbcTemplate.query(sql, new Object[]{id}, (rs) -> {
+                Stock stock = new Stock();
+                stock.setUUID(rs.getString("uuid"));
+                stock.setCompany(rs.getString("company_name"));
+                stock.setCost(rs.getLong("cost"));
+                stock.setQuantity(rs.getLong("quantity"));
+                stock.setSym(rs.getString("sym"));
+                stocksList.add(stock);
+            });
+            stocks.setStocks(stocksList);
+            return stocks;
+        } catch (DataAccessException e) {
+            log.error("Error retrieving stocks", e);
+            return null;
+        }
+    }
+
 
     @Override
     public Trader getTraders(String email, String password) {
@@ -33,7 +62,7 @@ public class RepoImpl implements Repository {
             });
         } catch (DataAccessException e) {
             log.error("Error retrieving trader", e);
-            return null; // Or throw an exception based on your requirements
+            return null;
         }
     }
 

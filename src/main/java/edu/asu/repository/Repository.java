@@ -2,6 +2,7 @@ package edu.asu.repository;
 
 
 import edu.asu.entity.StockOrder;
+import edu.asu.entity.Stocks;
 import edu.asu.entity.Trader;
 
 public interface Repository {
@@ -11,5 +12,6 @@ public interface Repository {
 
     void handleOrder(StockOrder stockOrder);
 
-//    Portfolio getPortfolio(String email);
+    Stocks getStocks(String email);
+
 }

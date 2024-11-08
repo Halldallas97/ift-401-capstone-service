@@ -1,12 +1,14 @@
 package edu.asu.repository;
 
-import edu.asu.entity.Portfolio;
+import edu.asu.entity.StockOrder;
 import edu.asu.entity.Trader;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 
 @Service
@@ -47,17 +49,36 @@ public class RepoImpl implements Repository {
         }
     }
 
-//    @Override
-//    public Portfolio getPortfolio(String email) {
-//        String sql = "select id from portfolio where trader_email = ?";
-//        try {
-//            Long portfolioId = jdbcTemplate.queryForObject(sql, new Object[]{email}, Long.class);
-//        } catch (DataAccessException e) {
-//            log.error("Error retrieving portfolio for trader with email: {}", email, e);
-//            return null;
-//        }
-//        return null;
-//    }
+    @Override
+    public void handleOrder(StockOrder stockOrder) {
+        UUID uuid = UUID.randomUUID();
+        Integer id = getUserId(stockOrder.getEmail());
+        if (id == null) {
+            System.out.println("Portfolio ID not found for email: " + stockOrder.getEmail());
+            return;
+        }
+        String sql = "INSERT INTO stock (uuid, company_name, cost, quantity, sym, volume, portfolio_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, uuid.toString(), stockOrder.getName(), stockOrder.getCostPerStock(),
+                stockOrder.getQuantity(), stockOrder.getSymbol(), stockOrder.getTotal(), id);
+
+        updateWallet(stockOrder.getEmail(), stockOrder.getNewBalance());
+
+    }
+
+    private void updateWallet(String email, int wallet) {
+        String sql = "update trader set wallet = ? where email = ? ";
+        jdbcTemplate.update(sql, wallet, email);
+    }
+
+    private Integer getUserId(String email) {
+        String sql = "SELECT id FROM portfolio WHERE trader_email = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{email}, Integer.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
     private void createPortfolioAccount(String email) {

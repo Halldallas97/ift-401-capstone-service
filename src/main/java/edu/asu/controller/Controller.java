@@ -1,6 +1,6 @@
 package edu.asu.controller;
 
-import edu.asu.entity.Portfolio;
+import edu.asu.entity.StockOrder;
 import edu.asu.entity.Trader;
 import edu.asu.repository.Repository;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,11 @@ public class Controller {
     @PostMapping("/login")
     public Trader getTraders(@RequestParam("email") String email, @RequestParam("password") String password) {
         return repository.getTraders(email, password);
+    }
+
+    @PostMapping("/buy")
+    public void postBuyOrder(@RequestBody StockOrder stockOrder) {
+        repository.handleOrder(stockOrder);
     }
     //todo implement getting users portfolio data
 //    @GetMapping("/portfolio")

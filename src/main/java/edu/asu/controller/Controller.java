@@ -30,6 +30,10 @@ public class Controller {
     public Stocks getPortfolio(@RequestParam("email") String email) {
         return repository.getStocks(email);
     }
+    @GetMapping("/wallet")
+    public int getWallet(@RequestParam("email") String email) {
+        return repository.getWallet(email);
+    }
 
     @PostMapping("/trader")
     public void postTrader(@RequestBody Trader trader) {

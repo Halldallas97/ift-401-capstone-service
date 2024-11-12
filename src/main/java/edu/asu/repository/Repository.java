@@ -14,4 +14,5 @@ public interface Repository {
 
     Stocks getStocks(String email);
 
+    int getWallet(String email);
 }

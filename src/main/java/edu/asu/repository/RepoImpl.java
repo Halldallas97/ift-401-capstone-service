@@ -10,7 +10,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,26 +23,46 @@ public class RepoImpl implements Repository {
     @Override
     public Stocks getStocks(String email) {
         Integer id = getUserId(email);
+        if (id == null) {
+            System.out.println("User ID not found for email: " + email);
+            return null;
+        }
+
         String sql = "SELECT * FROM stock WHERE portfolio_id = ?";
         Stocks stocks = new Stocks();
-        List<Stock> stocksList = new ArrayList<>();
+        List<Stock> stocksList;
         try {
-            jdbcTemplate.query(sql, new Object[]{id}, (rs) -> {
+            stocksList = jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) -> {
                 Stock stock = new Stock();
                 stock.setUUID(rs.getString("uuid"));
                 stock.setCompany(rs.getString("company_name"));
                 stock.setCost(rs.getLong("cost"));
                 stock.setQuantity(rs.getLong("quantity"));
                 stock.setSym(rs.getString("sym"));
-                stocksList.add(stock);
+                return stock;
             });
             stocks.setStocks(stocksList);
+            if (stocksList.isEmpty()) {
+                System.out.println("No stocks found for portfolio ID: " + id);
+            }
             return stocks;
         } catch (DataAccessException e) {
             log.error("Error retrieving stocks", e);
             return null;
         }
     }
+
+    @Override
+    public int getWallet(String email) {
+        String sql = "SELECT wallet FROM trader WHERE email = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{email}, Integer.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
 
 
     @Override
@@ -91,7 +110,7 @@ public class RepoImpl implements Repository {
                 stockOrder.getQuantity(), stockOrder.getSymbol(), stockOrder.getTotal(), id);
 
         updateWallet(stockOrder.getEmail(), stockOrder.getNewBalance());
-
+        log.info("success");
     }
 
     private void updateWallet(String email, int wallet) {

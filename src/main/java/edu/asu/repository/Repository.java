@@ -15,4 +15,6 @@ public interface Repository {
     Stocks getStocks(String email);
 
     int getWallet(String email);
+
+    void addWallet(String email, Long add);
 }

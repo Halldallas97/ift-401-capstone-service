@@ -63,6 +63,21 @@ public class RepoImpl implements Repository {
         }
     }
 
+    @Override
+    public void addWallet(String email, Long add) {
+        int startingBalance = getWallet(email);
+        long newBalance = startingBalance + add;
+        String sql = "UPDATE trader " +
+                "SET wallet = ? " +
+                "WHERE email = ?";
+        try{
+            jdbcTemplate.update(sql, newBalance, email);
+        } catch (DataAccessException e){
+            log.error("we caught an exception here");
+        }
+
+        log.info("successfully found wallet and updated it");
+    }
 
 
     @Override

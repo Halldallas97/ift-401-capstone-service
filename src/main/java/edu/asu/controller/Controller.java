@@ -35,8 +35,8 @@ public class Controller {
         return repository.getWallet(email);
     }
     @PutMapping("/wallet")
-    public void updateWallet(@RequestParam("email") String email,@RequestParam("add") Long add ){
-        repository.addWallet(email, add);
+    public void updateWallet(@RequestParam("email") String email,@RequestParam("add") Long add, @RequestParam("withdrawl") boolean withdrawl){
+        repository.addWallet(email, add, withdrawl);
     }
 
     @PostMapping("/trader")

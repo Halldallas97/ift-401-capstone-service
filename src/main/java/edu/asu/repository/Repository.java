@@ -16,5 +16,5 @@ public interface Repository {
 
     int getWallet(String email);
 
-    void addWallet(String email, Long add);
+    void addWallet(String email, Long add, boolean withdrawl);
 }

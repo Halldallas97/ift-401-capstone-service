@@ -63,6 +63,42 @@ public class RepoImpl implements Repository {
         }
     }
 
+    @Override
+    public void addWallet(String email, Long add, boolean withdrawal) {
+        int startingBalance = getWallet(email);
+        long newBalance = withdrawal ? startingBalance - add : startingBalance + add;
+        if (withdrawal && startingBalance < add) {
+            log.error("Insufficient funds for withdrawal");
+            return;
+        }
+        String sql = "UPDATE trader " +
+                "SET wallet = ? " +
+                "WHERE email = ?";
+        try {
+            jdbcTemplate.update(sql, newBalance, email);
+        } catch (DataAccessException e) {
+            log.error("Exception occurred while updating wallet: ", e);
+        }
+        log.info("Successfully found wallet and updated it");
+    }
+
+    @Override
+    public void sellStock(Stock stock, String email) {
+        long amount = stock.getCost() * stock.getQuantity();
+        addWallet(email, amount, false);
+        Integer id = getUserId(email);
+        String sql = "DELETE FROM stock \n" +
+                "WHERE portfolio_id = ? and \n" +
+                "company_name = ? and \n" +
+                "quantity = ?";
+        try {
+            jdbcTemplate.update(sql, id, stock.getCompany(), stock.getQuantity());
+        } catch (DataAccessException e) {
+            log.error("Exception occurred while updating wallet: ", e);
+        }
+        log.info("Successfully found wallet and updated it");
+
+    }
 
 
     @Override

@@ -1,5 +1,6 @@
 package edu.asu.controller;
 
+import edu.asu.entity.Stock;
 import edu.asu.entity.StockOrder;
 import edu.asu.entity.Stocks;
 import edu.asu.entity.Trader;
@@ -35,8 +36,12 @@ public class Controller {
         return repository.getWallet(email);
     }
     @PutMapping("/wallet")
-    public void updateWallet(@RequestParam("email") String email,@RequestParam("add") Long add, @RequestParam("withdrawl") boolean withdrawl){
-        repository.addWallet(email, add, withdrawl);
+    public void updateWallet(@RequestParam("email") String email,@RequestParam("add") Long add, @RequestParam("withdrawal") boolean withdrawal){
+        repository.addWallet(email, add, withdrawal);
+    }
+    @PutMapping("/sell")
+    public void sellStock(@RequestBody Stock stock, @RequestParam("email") String email ){
+        repository.sellStock(stock, email);
     }
 
     @PostMapping("/trader")

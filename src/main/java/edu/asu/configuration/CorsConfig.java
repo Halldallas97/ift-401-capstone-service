@@ -14,13 +14,10 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedOrigin("https://server-dashboard-two.vercel.app");
-        configuration.addAllowedOrigin("https://master.d203nxq9pp7qqy.amplifyapp.com");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedMethod("GET");
         configuration.addAllowedMethod("POST");
         configuration.addAllowedMethod("PUT");
-        configuration.addAllowedMethod("DELETE");
         configuration.addAllowedHeader("*");
         source.registerCorsConfiguration("/**", configuration);
         return new CorsFilter(source);

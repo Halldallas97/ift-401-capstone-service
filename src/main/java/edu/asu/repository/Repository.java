@@ -1,10 +1,7 @@
 package edu.asu.repository;
 
 
-import edu.asu.entity.Stock;
-import edu.asu.entity.StockOrder;
-import edu.asu.entity.Stocks;
-import edu.asu.entity.Trader;
+import edu.asu.entity.*;
 
 public interface Repository {
     Trader getTraders(String email, String password);
@@ -19,5 +16,7 @@ public interface Repository {
 
     void addWallet(String email, Long add, boolean withdrawl);
 
-    void sellStock(Stock stock, String email);
+    void sellStock(Stock stock, String email, double sellPrice);
+
+    Transactions getTraderTransactions(String email);
 }

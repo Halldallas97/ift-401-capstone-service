@@ -3,25 +3,19 @@ package edu.asu.controller;
 import edu.asu.entity.Stock;
 import edu.asu.entity.StockOrder;
 import edu.asu.entity.Stocks;
-import edu.asu.entity.Trader;
+import edu.asu.entity.Transactions;
 import edu.asu.repository.Repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-
 @org.springframework.web.bind.annotation.RestController
 @Slf4j
-@RequestMapping("api/server")
-public class Controller {
+@RequestMapping("api/server/stock")
+public class StockController {
     private final Repository repository;
-    public Controller(Repository repository) {
+    public StockController(Repository repository) {
         this.repository = repository;
     }
-    @PostMapping("/login")
-    public Trader getTraders(@RequestParam("email") String email, @RequestParam("password") String password) {
-        return repository.getTraders(email, password);
-    }
-
     @PostMapping("/buy")
     public void postBuyOrder(@RequestBody StockOrder stockOrder) {
         repository.handleOrder(stockOrder);
@@ -36,18 +30,20 @@ public class Controller {
         return repository.getWallet(email);
     }
     @PutMapping("/wallet")
-    public void updateWallet(@RequestParam("email") String email,@RequestParam("add") Long add, @RequestParam("withdrawal") boolean withdrawal){
+    public void updateWallet(@RequestParam("email") String email,
+                             @RequestParam("add") Long add,
+                             @RequestParam("withdrawal") boolean withdrawal){
         repository.addWallet(email, add, withdrawal);
     }
     @PutMapping("/sell")
-    public void sellStock(@RequestBody Stock stock, @RequestParam("email") String email ){
-        repository.sellStock(stock, email);
+    public void sellStock(@RequestBody Stock stock,
+                          @RequestParam("email") String email,
+                          @RequestParam("currentPrice") double sellPrice ){
+        repository.sellStock(stock, email, sellPrice);
+    }
+    @GetMapping("/transactions")
+    public Transactions getTransactions(@RequestParam("email") String email){
+        return repository.getTraderTransactions(email);
     }
 
-    @PostMapping("/trader")
-    public void postTrader(@RequestBody Trader trader) {
-        //todo hash password
-        log.info("going to create a new trader! {}", trader);
-        repository.postTrader(trader);
-    }
 }
